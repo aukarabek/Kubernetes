@@ -9,7 +9,7 @@ Deploying directly to EC2 gives full control over the cluster, including its con
 
 This could make it easier to configure Kubernetes for more experienced engineers.
 
-And remember that manually administering Kubernetes increases the maintenance overheads and can be daunting to inexperienced operators. 
+And remember that manually administering Kubernetes increases the maintenance overheads and can be daunting to inexperienced users. 
 
 You will be responsible for applying cluster upgrades and preserving reliability. 
 
