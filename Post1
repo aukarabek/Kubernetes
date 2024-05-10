@@ -1,1 +1,52 @@
-This is the test file
+15 Kubernetes Best Practices Every Developer Should Know.
+
+Here are some best practices to use when using Kubernetes (K8s).
+
+As the most popular container orchestration system, K8s is the de-facto standard for the modern cloud engineer to get to grips with. 
+K8s is a notoriously complex system to use and maintain, so getting a good grasp of what you should and should not be doing, 
+and knowing what is possible will get your deployment off to a solid start.
+These recommendations cover common issues within three broad categories, application development, governance, and cluster configuration.
+
+1. Use namespaces
+Namespaces in K8s are important to utilize in order to organize your objects, create logical partitions within your cluster, and for security purposes. 
+By default, there are three namespaces in a K8s cluster, default, kube-public and kube-system.
+
+RBAC can be used to control access to particular namespaces in order to limit the access of a group to control the blast-radius of any mistakes that might occur, 
+for example, a group of developers may only have access to a namespace called dev , and have no access to the production namespace. 
+The ability to limit different teams to different namespaces can be valuable to avoid duplicated work or resource conflict.
+
+LimitRange objects can also be configured against namespaces to define the standard size for a container deployed in the namespace. 
+ResourceQuotas can also be used to limit the total resource consumption of all containers inside a Namespace. 
+Network policies can be used against namespaces to limit traffic between pods.
+
+2. Use readiness and liveness probes
+Readiness and Liveness probes are essentially types of health checks. These are another very important concept to utilize in K8s.
+
+Readiness probes ensure that requests to a pod are only directed to it when the pod is ready to serve requests. 
+If it is not ready, then requests are directed elsewhere. It is important to define the readiness probe for each container, as there are no default values set for these in K8s.
+
+For example, if a pod takes 20 seconds to start and the readiness probe was missing, then any traffic directed to that pod during the startup time would cause a failure. 
+Readiness probes should be independent and not take into account any dependencies on other services, such as a backend database or caching service.
+
+Liveness probes test if the application is running in order to mark it as healthy. For example, a particular path of a web app could be tested to ensure it is responding. 
+If not, the pod will not be marked as healthy and the probe failure will cause the kubeletto launch a new pod, which will then be tested again. 
+This type of probe is used as a recovery mechanism in case the process becomes unresponsive.
+
+3. Use autoscaling
+Where it is appropriate, autoscaling can be employed to dynamically adjust the number of pods (horizontal pod autoscaler), the amount of resources consumed by the pods (vertical autoscaler), 
+or the number of nodes in the cluster (cluster autoscaler), depending on the demand for the resources.
+The horizontal pod autoscaler can also scale a replication controller, replica set, or statefulset based on CPU demand.
+Using scaling also brings some challenges, such as not storing persistent data in the container’s local filesystem, as this would prevent horizontal autoscaling. 
+Instead, a PersistentVolume could be used. (Read more about Kubernetes Persistent Volumes).
+The cluster autoscaler is useful when highly variable workloads exist on the cluster that may require different amounts of resources at different times based on demand. 
+Removing unused nodes automatically is also a great way to save money!
+
+4. Use resource requests and limits
+Resource requests and limits (minimum and maximum amount of resources that can be used in a container) should be set to avoid a container starting without the required resources assigned, 
+or the cluster running out of available resources.
+Without limits, pods can utilize more resources than required, causing the total available resources to be reduced which may cause a problem with other applications on the cluster. 
+Nodes may crash, and new pods may not be able to be placed corrected by the scheduler.
+Without requests, if the application cannot be assigned enough resources, it may fail when attempting to start or perform erratically.
+Resource requests and limits define the amount of CPU and Memory available in millicores and mebibytes. 
+Note that if your process goes over the memory limit, the process is terminated, so it may not always be appropriate to set this in all cases. 
+If your container goes over the CPU limit, the process is throttled.
